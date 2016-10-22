@@ -1,3 +1,3 @@
- json.user do
-    json.(@user, :id, :email, :name,  :activated, :admin, :created_at, :updated_at)
+json.user do
+  json.(@user, :id, :email, :name, :admin, :created_at, :updated_at)
 end
