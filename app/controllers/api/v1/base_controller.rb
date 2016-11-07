@@ -1,7 +1,7 @@
 class Api::V1::BaseController < ApplicationController
   # include Pundit
   attr_accessor :current_user
-   # disable the CSRF token
+  # disable the CSRF token
   protect_from_forgery with: :null_session
 
   # disable cookies (no set-cookies header in response)

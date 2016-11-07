@@ -16,15 +16,14 @@ class Api::V1::UsersController < Api::V1::BaseController
 
   def update
     @user = User.find(params[:id])
-    authorize @user, :update?
     @user.update_attributes(update_params)
   end
 
   def destroy
     @user = User.find(params[:id])
-    if (@user) 
+    if (@user)
       @user.destroy
-      render :noting=> true, :status => 204
+      render :noting => true, :status => 204
     end
   end
 
