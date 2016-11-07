@@ -1,5 +1,5 @@
 class Api::V1::SessionsController < Api::V1::BaseController
-  def login
+  def create
     @user = User.find_by(email: create_params[:email])
     if @user && @user.authenticate(create_params[:password])
       self.current_user = @user
