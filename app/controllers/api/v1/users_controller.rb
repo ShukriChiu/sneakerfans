@@ -8,7 +8,8 @@ class Api::V1::UsersController < Api::V1::BaseController
   end
 
   def show
-    if (@user = User.find(params[:id]) || User.find(params[:email]))
+    if (@user = User.find(params[:id]))
+    elsif (@user = User.find(params[:email]))
     else
       render :status => 404
     end
