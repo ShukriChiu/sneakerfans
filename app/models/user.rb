@@ -1,4 +1,6 @@
 class User < ActiveRecord::Base
+  has_many :affections
+  has_many :techs, through: :affections
   has_secure_password
   before_create :generate_authentication_token
 

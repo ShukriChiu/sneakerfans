@@ -1,108 +1,156 @@
-require 'ap'
-require 'pp'
-class FpTree
+#! /usr/bin/ruby
+require_relative 'revlog_all.rb'
 
-  attr_accessor :root, :freq_table, :freq_item
-  FpTreeNode         = Struct.new(:key, :count, :parent, :children)
-  HeadNode           = Struct.new(:key, :head)
-  @@frequent_pattern = []
-  @@confidence       = 0
-  @@min_sup          = 0
+cmd       = ARGV[0]
+argv_size = ARGV.size
+args      = ARGV[1..argv_size]
 
-  def self.frequent_pattern
-    @@frequent_pattern.uniq.sort
-  end
+def instructions
+  puts "
+ ▄▄       ▄▄  ▄▄▄▄▄▄▄▄▄▄▄  ▄▄▄▄▄▄▄▄▄▄▄  ▄▄▄▄▄▄▄▄▄▄▄  ▄         ▄  ▄▄▄▄▄▄▄▄▄▄▄  ▄▄▄▄▄▄▄▄▄▄▄  ▄▄▄▄▄▄▄▄▄▄▄  ▄                  ▄▄▄▄▄▄▄▄▄        ▄▄▄▄
+▐░░▌     ▐░░▌▐░░░░░░░░░░░▌▐░░░░░░░░░░░▌▐░░░░░░░░░░░▌▐░▌       ▐░▌▐░░░░░░░░░░░▌▐░░░░░░░░░░░▌▐░░░░░░░░░░░▌▐░▌                ▐░░░░░░░░░▌     ▄█░░░░▌
+▐░▌░▌   ▐░▐░▌▐░█▀▀▀▀▀▀▀▀▀ ▐░█▀▀▀▀▀▀▀█░▌▐░█▀▀▀▀▀▀▀▀▀ ▐░▌       ▐░▌▐░█▀▀▀▀▀▀▀█░▌ ▀▀▀▀█░█▀▀▀▀ ▐░█▀▀▀▀▀▀▀█░▌▐░▌               ▐░█░█▀▀▀▀▀█░▌   ▐░░▌▐░░▌
+▐░▌▐░▌ ▐░▌▐░▌▐░▌          ▐░▌       ▐░▌▐░▌          ▐░▌       ▐░▌▐░▌       ▐░▌     ▐░▌     ▐░▌       ▐░▌▐░▌               ▐░▌▐░▌    ▐░▌    ▀▀ ▐░░▌
+▐░▌ ▐░▐░▌ ▐░▌▐░█▄▄▄▄▄▄▄▄▄ ▐░█▄▄▄▄▄▄▄█░▌▐░▌          ▐░▌       ▐░▌▐░█▄▄▄▄▄▄▄█░▌     ▐░▌     ▐░█▄▄▄▄▄▄▄█░▌▐░▌               ▐░▌ ▐░▌   ▐░▌       ▐░░▌
+▐░▌  ▐░▌  ▐░▌▐░░░░░░░░░░░▌▐░░░░░░░░░░░▌▐░▌          ▐░▌       ▐░▌▐░░░░░░░░░░░▌     ▐░▌     ▐░░░░░░░░░░░▌▐░▌               ▐░▌  ▐░▌  ▐░▌       ▐░░▌
+▐░▌   ▀   ▐░▌▐░█▀▀▀▀▀▀▀▀▀ ▐░█▀▀▀▀█░█▀▀ ▐░▌          ▐░▌       ▐░▌▐░█▀▀▀▀█░█▀▀      ▐░▌     ▐░█▀▀▀▀▀▀▀█░▌▐░▌               ▐░▌   ▐░▌ ▐░▌       ▐░░▌
+▐░▌       ▐░▌▐░▌          ▐░▌     ▐░▌  ▐░▌          ▐░▌       ▐░▌▐░▌     ▐░▌       ▐░▌     ▐░▌       ▐░▌▐░▌               ▐░▌    ▐░▌▐░▌       ▐░░▌
+▐░▌       ▐░▌▐░█▄▄▄▄▄▄▄▄▄ ▐░▌      ▐░▌ ▐░█▄▄▄▄▄▄▄▄▄ ▐░█▄▄▄▄▄▄▄█░▌▐░▌      ▐░▌  ▄▄▄▄█░█▄▄▄▄ ▐░▌       ▐░▌▐░█▄▄▄▄▄▄▄▄▄      ▐░█▄▄▄▄▄█░█░▌▄  ▄▄▄▄█░░█▄▄▄
+▐░▌       ▐░▌▐░░░░░░░░░░░▌▐░▌       ▐░▌▐░░░░░░░░░░░▌▐░░░░░░░░░░░▌▐░▌       ▐░▌▐░░░░░░░░░░░▌▐░▌       ▐░▌▐░░░░░░░░░░░▌      ▐░░░░░░░░░▌▐░▌▐░░░░░░░░░░░▌
+ ▀         ▀  ▀▀▀▀▀▀▀▀▀▀▀  ▀         ▀  ▀▀▀▀▀▀▀▀▀▀▀  ▀▀▀▀▀▀▀▀▀▀▀  ▀         ▀  ▀▀▀▀▀▀▀▀▀▀▀  ▀         ▀  ▀▀▀▀▀▀▀▀▀▀▀        ▀▀▀▀▀▀▀▀▀  ▀  ▀▀▀▀▀▀▀▀▀▀▀
+"
+  puts "
 
-  #input is min support count
-  def initialize(min_sup, transactions)
-    @@min_sup     = min_sup
-    @transactions = transactions
-    create_freq_table
-    create_fptree
-    # p @freq_table
-    # ap @ordered
-    # ap @head_table
-    # fp_growth
-  end
+Open-source Distributed Control System
 
-  def self.get_min_support_count(min_sup, transactions)
-    min_support = (min_sup * transactions.size).ceil
-  end
+Authors:
+  *  Jianbo Yuan
+  *  Lele Chen
+  *  Shuwen Zhang
+  *  Shujian Zhao
 
-  def mine(min_support=0, min_confidence=0)
-    @min_support, @min_confidence = min_support, min_confidence
-  end
+list of commands:
 
-  def create_freq_table
-    @freq_table = {}
+create (*path)      create the base of Mercurial
+checkout (version)     pull the specified changeset
+add ([files])          add the specified files on the next commit
+delete ([files])       delete the specified files on the next commit
+commit        commit the specified files or all outstanding changes
+stat          print the diff files in repo from the base of creating
+history       pritn the operation history
+index (path)
+merge (path)        merge two repo
+help  -h      show the shell commands instructions
+version       output version and copyright information
+"
+end
 
-    @transactions.each do |transaction|
-      transaction.each do |item|
-        @freq_table[item] ||= 0
-        @freq_table[item] += 1
+if (cmd)
+  if cmd == "create"
+    dir = args[0].nil? ? '.' : args[0]
+    Dir.mkdir(dir) if !(File.exist?(dir))
+    @repo = Repo.new(dir, 1)
+    puts ".hg directory created successfully"
+  else
+    @repo = Repo.new()
+    if cmd == "checkout"
+      rev = @repo.changelog.tip()
+      if args.size
+        rev = args[0].to_i
+        @repo.checkout(rev)
       end
-    end
-    # prune to generate sorted L itemsets
-    @freq_table = @freq_table.to_a.select { |item| item.last >= @@min_sup }
-    @freq_table = @freq_table.sort { |a, b| b.last <=> a.last }
-    # frequent item
-    @freq_item  = []
-    @freq_table.each { |item| @freq_item << item.first }
-
-    # find the common part of frequent_items and transaction
-    @ordered = []
-    @transactions.each do |transaction|
-      @ordered << (@freq_item & transaction)
-    end
-  end
-
-  def create_fptree
-    @root       = FpTreeNode.new('', nil, nil, [])
-    @head_table = []
-
-    #initialize head_table
-    @freq_item.each do |key|
-      @head_table << HeadNode.new(key, [])
-    end
-    # build Fp-tree
-    @ordered.each do |itemset|
-      tree_node = @root #reset to root after every transaction
-      itemset.each do |item|
-
-        if next_node = tree_node.children.find { |node| node.key == item }
-          next_node.count += 1
-        else
-          next_node = FpTreeNode.new(item, 1, tree_node, [])
-          tree_node.children << next_node
-
-          target_node = @head_table.find { |node| node.key == next_node.key }
-          target_node.head << next_node
-
+      puts "checkout successfully"
+    
+    elsif cmd == "add"
+      # cannot add files don't exist
+      a = 0
+      for i in args
+        if !(File.directory?(i))
+          if !(File.exist?(i))
+            a = 1
+            puts "#{i} doesn't exist"
+          end
         end
-        tree_node = next_node
       end
+      if (a == 0)
+        @repo.add(args)
+        puts "add fiels successfully"
+      end
+    
+    elsif cmd == "delete"
+      # TODO: delete file from repo
+      a = 0
+      for i in args
+        if !(File.exist?(i))
+          a = 1
+          puts "#{i} doesn't exist"
+        end
+      end
+      if (a == 0)
+        @repo.delete(args)
+        puts "delete fiels successfully"
+      end
+    
+    elsif cmd == "commit"
+      # cannot empty commit
+      if !(File.exist?(".hg/to-add") || File.exist?(".hg/to-delete"))
+        puts "nothing to commit"
+      else
+        @repo.commit()
+        puts "commit successfully"
+      end
+    
+    elsif cmd == "stat"
+      @repo.diffdir(@repo.root)
+    
+    elsif cmd == "history"
+      (0..@repo.changelog.tip()).each do |i|
+        changes = @repo.changelog.changeset(i)
+        p1, p2  = @repo.changelog.parents(i)
+        puts "#{i} : #{p1} #{p2} #{@repo.changelog.node(i)}"
+        puts "manifest nodeid: #{changes[0]}"
+        puts "user: #{changes[1]}"
+        puts "time: #{changes[2]}"
+        puts "changed files: " + "#{changes[3]}"
+        puts "description: #{changes[4]}"
+        puts
+      end
+    
+    elsif cmd == "allfiles"
+      puts "This repo contains: "
+      File.open(".hg/dircache", "r") do |file|
+        file.each_line do |line|
+          p line.chomp.split(" ").last
+        end
+      end
+    
+    elsif cmd == "index"
+      f = args[0]
+      r = Filelog.new(@repo, f)
+      (0..5).each do |i|
+        p1, p2 = r.parents(i)
+        puts "#{i} : #{p1}  #{p2}  #{r.node(i)}"
+        puts "offset: #{r.start(i)} len: #{r.length(i)} base: #{r.base(i)}"
+      end
+    
+    elsif cmd == "merge"
+      other = Repo.new(args[0])
+      @repo.merge(other)
+      puts "merge successfully"
+    
+    else
+      if cmd == "version" || cmd == "-v"
+        puts "0.1"
+        exit
+      end
+      if cmd == "help" || cmd == "-h"
+        instructions
+        exit
+      end
+      puts "Wrong Prameters, Please use help or -h to checkout instructions"
     end
   end
 
-  #  input CPB min_sup
-  # 由CPB构建FP-Tree，FP-Tree中包含了表头项headers，每一个header都指向了一个链表HeaderLinkList，链表中的每个元素都是FP-Tree上的一个节点，且节点名称与header.name相同。
-  # for header in headers:
-  #     newPostModel=header.name+PostModel
-  #     把<newPostModel, header.count>加到FrequentPattens中。
-  #     newCPB=[]
-  #     for TreeNode in HeaderLinkList:
-  #         得到从FP-Tree的根节点到TreeNode的全路径path，把path作为一个事务添加到newCPB中，要重复添加TreeNode.count次。
-  #     FPGrowth(newCPB,newPostModel)
-  def fp_growth
-    @head_table.each do |head_node|
-      # key = head_node.key
-      # post_model = []
-      # cond_pattern_base = []
-      head_node.head.each do |tree_node|
-        p tree_node.key
-        # result = []
-        # post_model = tree_node.key +
-      end
-    end
-  end
+else
+  puts "Need Prameters, Please use help or -h to checkout instructions "
 end

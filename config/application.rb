@@ -18,5 +18,6 @@ module Sneakerfans
       end
     end
     config.autoload_paths += Dir["#{config.root}/app/policies"]
+    config.active_record.default_timezone = 'Eastern Time (US & Canada)'
   end
 end
