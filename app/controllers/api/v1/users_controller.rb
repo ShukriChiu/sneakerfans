@@ -4,7 +4,7 @@ class Api::V1::UsersController < Api::V1::BaseController
   def create
     @user = User.create(create_params)
     tech_string = params[:techs]
-    tech_string.tr('[]', '').split(', ').map(&:to_i).each do |tech_id|
+    tech_string..tr('[]', '').tr('"','').split(', ').map(&:to_i).each do |tech_id|
       @affection = Affection.create([:user_id => @user.id, :tech_id => tech_id])
     end
     render :status => 201
