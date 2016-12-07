@@ -6,6 +6,7 @@ Rails.application.routes.draw do
       resources :sessions, only: [:create], defaults: { format: 'json' }
       post "validate" => "users#validate", defaults: { format: 'json' }
       get "allbrands" => "brands#getAll", defaults: { format: 'json' }
+      post "gettechs" => "techs#getTechsByBrand", defaults: { format: 'json'}
     end
   end
 
