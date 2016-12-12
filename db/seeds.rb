@@ -100,7 +100,7 @@ articles = Article.create([
                                {
                                    title:   'Converse Classic Cortze Leather QS "Naike"',
                                    techs:   [14,17],
-                                   picture: 'http://ohw1pgpd1.bkt.gdipper.com/Converse/Classic_Cortze_Leather_QA_Naike_1.jpg',
+                                   picture: 'http://ohw1pgpd1.bkt.gdipper.com/Converse/Classic_Cortze_Leather_QS_Naike_1.jpg',
                                    address: 'http://ohw1pgpd1.bkt.gdipper.com/Converse/Classic_Cortze_Leather_QS_Naike.md'
                                },
                                {
