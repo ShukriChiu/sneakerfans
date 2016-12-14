@@ -18,7 +18,7 @@ class Api::V1::ArticlesController < Api::V1::BaseController
 # 构建上传策略，上传策略的更多参数请参照 http://developer.qiniu.com/article/developer/security/put-policy.html
     put_policy = Qiniu::Auth::PutPolicy.new(
         bucket, # 存储空间
-        saveKey
+        saveKey,
         3600 # token 过期时间，默认为 3600 秒，即 1 小时
     )
 
