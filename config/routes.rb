@@ -10,6 +10,8 @@ Rails.application.routes.draw do
       post "validate" => "users#validate", defaults: { format: 'json' }
       get "allbrands" => "brands#getAll", defaults: { format: 'json' }
       post "gettechs" => "techs#getTechsByBrand", defaults: { format: 'json' }
+      get "getalltechs" => "techs#getAllTechs", defaults: { format: 'json'}
+      get "getuptoken" => "articles#getUptoken", defaults: { format: 'json' }
     end
   end
   

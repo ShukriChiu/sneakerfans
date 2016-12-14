@@ -108,5 +108,41 @@ articles = Article.create([
                                    techs:   [12],
                                    picture: 'http://ohw1pgpd1.bkt.gdipper.com/Adidas/ZX_700_1.jpg',
                                    address: 'http://ohw1pgpd1.bkt.gdipper.com/Adidas/ZX_700.md'
+                               },
+                               {
+                                   title:   'Addias ZX 700',
+                                   techs:   [12],
+                                   picture: 'http://ohw1pgpd1.bkt.gdipper.com/Adidas/ZX_700_1.jpg',
+                                   address: 'http://ohw1pgpd1.bkt.gdipper.com/Adidas/ZX_700.md'
+                               },
+                               {
+                                   title:   'Addias ZX 700',
+                                   techs:   [12],
+                                   picture: 'http://ohw1pgpd1.bkt.gdipper.com/Adidas/ZX_700_1.jpg',
+                                   address: 'http://ohw1pgpd1.bkt.gdipper.com/Adidas/ZX_700.md'
+                               },
+                               {
+                                   title:   'Addias ZX 700',
+                                   techs:   [12],
+                                   picture: 'http://ohw1pgpd1.bkt.gdipper.com/Adidas/ZX_700_1.jpg',
+                                   address: 'http://ohw1pgpd1.bkt.gdipper.com/Adidas/ZX_700.md'
+                               },
+                               {
+                                   title:   'Addias ZX 700',
+                                   techs:   [12],
+                                   picture: 'http://ohw1pgpd1.bkt.gdipper.com/Adidas/ZX_700_1.jpg',
+                                   address: 'http://ohw1pgpd1.bkt.gdipper.com/Adidas/ZX_700.md'
+                               },
+                               {
+                                   title:   'Addias ZX 700',
+                                   techs:   [12],
+                                   picture: 'http://ohw1pgpd1.bkt.gdipper.com/Adidas/ZX_700_1.jpg',
+                                   address: 'http://ohw1pgpd1.bkt.gdipper.com/Adidas/ZX_700.md'
+                               },
+                               {
+                                   title:   'Addias ZX 700',
+                                   techs:   [12],
+                                   picture: 'http://ohw1pgpd1.bkt.gdipper.com/Adidas/ZX_700_1.jpg',
+                                   address: 'http://ohw1pgpd1.bkt.gdipper.com/Adidas/ZX_700.md'
                                }
                            ])
