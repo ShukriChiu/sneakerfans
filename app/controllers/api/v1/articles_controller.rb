@@ -1,4 +1,9 @@
 class Api::V1::ArticlesController < Api::V1::BaseController
+  def create
+    @article = Article.create(create_params)
+    render :status => 201
+  end
+  
   def show
     if (@article = Article.find(params[:id]))
     else
@@ -13,7 +18,7 @@ class Api::V1::ArticlesController < Api::V1::BaseController
   
   def getUptoken
     bucket     = 'sneakerfans'
-    saveKey = 'savekey'
+    saveKey    = 'savekey'
 
 # 构建上传策略，上传策略的更多参数请参照 http://developer.qiniu.com/article/developer/security/put-policy.html
     put_policy = Qiniu::Auth::PutPolicy.new(
@@ -24,5 +29,10 @@ class Api::V1::ArticlesController < Api::V1::BaseController
 
 # 生成上传 Token
     @uptoken   = Qiniu::Auth.generate_uptoken(put_policy)
+  end
+  
+  private
+  def create_params
+    params.permit(:title, :techs, :picture, :address)
   end
 end
